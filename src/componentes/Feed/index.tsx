@@ -1,5 +1,5 @@
 // src/components/Feed/Feed.tsx
-import { posteo } from "../Tipos"
+import type { posteo } from '../../type/tipos'
 
 import PostCard from "../PostCard"         
 import './Feed.css'

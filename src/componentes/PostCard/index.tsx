@@ -1,5 +1,5 @@
 // src/components/PostCard/PostCard.tsx
-import { posteo } from '../../type/tipos'
+import type { posteo } from '../../type/tipos'
 import { usuarioLogueado } from '../../data/dataDeUsuario'
 import './PostCard.css'
 

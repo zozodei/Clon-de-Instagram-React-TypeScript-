@@ -1,6 +1,8 @@
 import { useState } from 'react'
+
 import axios from 'axios'
-import {posteo} from './type/tipos'
+
+import type {posteo} from './type/tipos'
 import {useEffect} from 'react'
 import {usuarioLogueado} from './data/dataDeUsuario'
 import Sidebar from './componentes/SideBar'

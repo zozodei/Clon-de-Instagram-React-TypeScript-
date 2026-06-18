@@ -1,5 +1,5 @@
 // src/components/ProfilePage/ProfilePage.tsx
-import { posteo, UsuarioFijo } from '../../type/tipos
+import type { posteo, UsuarioFijo } from '../../type/tipos'
 import './ProfilePage.css'
 
 interface Props {
