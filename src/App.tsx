@@ -1,120 +1,134 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import axios from 'axios'
+import {posteo} from './type/tipos'
+import {useEffect} from 'react'
+import {usuarioLogueado} from './data/dataDeUsuario'
+import Sidebar from './componentes/SideBar'
+import StoriesBar from './componentes/StoriesBar'
+import PostCard from './componentes/PostCard'
+import Feed from './componentes/Feed'
+import ProfilePage from './componentes/ProfilePage'
+import PostModal from './componentes/PostModal'
 import './App.css'
 
+
+const CAPTIONS = [
+  'Cuando es lunes pero igual estás feliz 😸',
+  'El sol me llama pero el sueño me retiene 😴',
+  'Listo para conquistar el mundo 🐾',
+  'Nadie me entiende como mi almohada 💤',
+  'Día perfecto para no hacer nada 🌿',
+  'Estoy en modo zen 🧘',
+  'Juzgándote en silencio desde aquí 👀',
+  'Detective en servicio activo 🔍',
+  'Cuando encontrás el rayo de sol perfecto ☀️',
+  'Solo paso por aquí a ser hermoso 🌟',
+  'No me interrumpas, estoy ocupado 💅',
+  'El universo me debe una siesta 😤',
+]
+
+const USUARIOS = [
+  'michi_lover', 'gato_curioso', 'pelusa_oficial', 'felix_jr',
+  'bigotes_pro', 'ronroneo_max', 'zarpazo_suave', 'michi_zen',
+  'gatito_bueno', 'patas_lindas', 'colita_tiesa', 'miau_forever',
+]
+
+const COMENTARIOS_FIJOS = [
+  { id: 1, usuario: 'gato_fan_01', texto: '¡Qué hermoso! 😍' },
+  { id: 2, usuario: 'luna_cat', texto: 'Me robaste el corazón 🐾' },
+  { id: 3, usuario: 'michi_watcher', texto: 'Definitivamente el mejor del día' },
+]
+
+
 function App() {
-  const [count, setCount] = useState(0)
+    const [posteos, setPosteos] = useState<posteo[]>([])
+  const [vistaActual, setVistaActual] = useState<'feed' | 'perfil'>('feed')
+  const [postSeleccionado, setPostSeleccionado] = useState<posteo | null>(null)
+  
+   useEffect(() => {
+    const traerGatos = async () => {
+      try {
+        const response = await axios.get('https://api.thecatapi.com/v1/images/search', {
+          params: {
+            limit: 12,
+            api_key: import.meta.env.VITE_CAT_API_KEY,
+          }
+        })
+
+        const posteoGenerados: posteo[] = response.data.map(
+          (imagen: { id: string; url: string }, index: number) => ({
+            id: index + 1,
+            url: imagen.url,
+            usuario: USUARIOS[index],
+            caption: CAPTIONS[index],
+            likes: Math.floor(Math.random() * 500) + 50,
+            liked: false,
+            comentarios: COMENTARIOS_FIJOS,
+            fecha: new Date(Date.now() - index * 3600000).toLocaleDateString('es-AR'),
+          })
+        )
+
+        setPosteos(posteoGenerados)
+      } catch (error) {
+        console.error('Error al traer los gatos:', error)
+      }
+    }
+
+    traerGatos()
+  }, [])
+
+  // Recorre todos los posteos y solo modifica el que tiene el id que recibió
+  const toggleLike = (id: number) => {
+    setPosteos(
+      posteos.map((post) => {
+        if (post.id !== id) return post
+        return {
+          ...post,
+          liked: !post.liked,
+          likes: post.liked ? post.likes - 1 : post.likes + 1,
+        }
+      })
+    )
+  }
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+       <div className="app-layout">
+      <Sidebar
+        vistaActual={vistaActual}
+        onNavegar={setVistaActual}
+        fotoPerfil={usuarioLogueado.fotoPerfil}
+      />
 
-      <div className="ticks"></div>
+      <main className="app-main">
+        {vistaActual === 'feed' ? (
+          <>
+            <StoriesBar />
+            <Feed
+              posteos={posteos}
+              onClickPost={setPostSeleccionado}
+              onToggleLike={toggleLike}
+            />
+          </>
+        ) : (
+          <ProfilePage
+            usuario={usuarioLogueado}
+            posteos={posteos}
+            onClickPost={setPostSeleccionado}
+          />
+        )}
+      </main>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      {postSeleccionado && (
+        <PostModal
+          post={postSeleccionado}
+          onCerrar={() => setPostSeleccionado(null)}
+          onToggleLike={toggleLike}
+        />
+      )}
+    </div>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+
     </>
   )
 }

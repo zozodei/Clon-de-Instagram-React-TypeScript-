@@ -1,0 +1,83 @@
+/* src/components/Sidebar/Sidebar.css */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 245px;
+  height: 100vh;
+  border-right: 1px solid #dbdbdb;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 12px 20px;
+  z-index: 10;
+}
+
+.sidebar-logo {
+  font-size: 22px;
+  font-style: italic;
+  font-weight: 700;
+  padding: 18px 12px 24px;
+  font-family: 'Georgia', serif;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 15px;
+  color: #262626;
+  width: 100%;
+  text-align: left;
+  transition: background 0.1s;
+}
+
+.sidebar-item:hover {
+  background: #f0f0f0;
+}
+
+/* El item activo tiene texto en negrita */
+.sidebar-item.activo span {
+  font-weight: 700;
+}
+
+.sidebar-icono {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.sidebar-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* El botón "Más" queda abajo del todo */
+.sidebar-mas {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  border-radius: 10px;
+  transition: background 0.1s;
+}
+
+.sidebar-mas:hover {
+  background: #f0f0f0;
+}

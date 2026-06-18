@@ -1,0 +1,59 @@
+/* src/components/StoriesBar/StoriesBar.css */
+.stories-bar {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #dbdbdb;
+  border-radius: 4px;
+  background: #fff;
+  overflow-x: auto;
+  width: 100%;
+  max-width: 614px;
+  margin-bottom: 24px;
+  /* Oculta la scrollbar pero igual se puede scrollear */
+  scrollbar-width: none;
+}
+
+.stories-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.story-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  flex-shrink: 0; /* que no se achique cuando hay muchas stories */
+}
+
+/* El anillo de colores alrededor del avatar */
+.story-anillo {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+
+/* La tuya no tiene gradiente */
+.story-anillo.tuya {
+  background: #dbdbdb;
+}
+
+.story-foto {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff; /* separa la foto del anillo */
+}
+
+.story-usuario {
+  font-size: 12px;
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}

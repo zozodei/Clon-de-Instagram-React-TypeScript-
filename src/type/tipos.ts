@@ -4,7 +4,6 @@ export interface comentario {
     texto: string
 }
 
-// IA: Definir como hacer el tema de los likes y que el usuario pueda dar like a un posteo y que se actualice el numero de likes y el estado de liked
 export interface posteo 
 {
     id: number,
