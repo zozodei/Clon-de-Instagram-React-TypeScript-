@@ -1,5 +1,8 @@
 import {type UsuarioFijo, type Historias} from "../type/tipos"
 
+// importamos los tipos de type, para poder "instanciarlos", asi ya tenemos para esta sesion 
+
+//creamos una instancia del objeto de usuarioFijo (es el dueño de nuestro instagram de gatitos)
 export const usuarioLogueado : UsuarioFijo = 
 {
       usuario: 'Flecha_Michis',
