@@ -1,12 +1,17 @@
 // src/components/Sidebar/Sidebar.tsx
 import './Sidebar.css'
 
+// IA: le digo que tiene que recibir, todo esto es lo que le mandamos antes desde app.tsx
+// el estado de la vista actual para saber que boton esta activo
+// la funcion para cambiar la vista y la foto de perfil para mostrarla en el boton de perfil
 interface Props {
   vistaActual: 'feed' | 'perfil'
-  onNavegar: (vista: 'feed' | 'perfil') => void
+  onNavegar: (vista: 'feed' | 'perfil') => void // es la funcion que cambia la vista al apretar
   fotoPerfil: string
 }
 
+// Sidebar va a ser el que contenga la info de todo lo imp para esto
+// aca vemos que tiene que ser igual a la interface props
 const Sidebar = ({ vistaActual, onNavegar, fotoPerfil }: Props) => {
   return (
     <aside className="sidebar">
@@ -18,7 +23,9 @@ const Sidebar = ({ vistaActual, onNavegar, fotoPerfil }: Props) => {
           className={`sidebar-item ${vistaActual === 'feed' ? 'activo' : ''}`}
           onClick={() => onNavegar('feed')}
         >
-          {/* Ícono home SVG — igual al de la captura */}
+          {/* IA: aca puse los iconos de cada boton, los busque en una pagina de iconos svg gratis
+              les puse la clase sidebar-icono para poder darles estilo desde el css
+              y el span es para mostrar el nombre del boton al lado del icono */}
           <svg className="sidebar-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
             <path d="M9 21V12h6v9"/>
@@ -69,7 +76,8 @@ const Sidebar = ({ vistaActual, onNavegar, fotoPerfil }: Props) => {
           <span>Crear</span>
         </button>
 
-        {/* Este es el único que navega al perfil */}
+        {/* si la vista actual es perfil se agrega la clase activo para el estilo
+            y cuando apretamos llama a onNavegar y le manda 'perfil' para cambiar la vista */}
         <button
           className={`sidebar-item ${vistaActual === 'perfil' ? 'activo' : ''}`}
           onClick={() => onNavegar('perfil')}

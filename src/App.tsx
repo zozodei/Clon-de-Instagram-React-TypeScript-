@@ -1,26 +1,22 @@
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
 import axios from 'axios'
-
-import type {posteo} from './type/tipos'
-import {useEffect} from 'react'
-import {usuarioLogueado} from './data/dataDeUsuario'
+import type { posteo } from './type/tipos'
+import { usuarioLogueado } from './data/dataDeUsuario'
 import Sidebar from './componentes/SideBar'
 import StoriesBar from './componentes/StoriesBar'
-import PostCard from './componentes/PostCard'
 import Feed from './componentes/Feed'
 import ProfilePage from './componentes/ProfilePage'
 import PostModal from './componentes/PostModal'
 import './App.css'
 
-// importamos las librerias y los componentes que vamos a usar, tmb los tipos de usuario y demas 
+// importamos las librerias y los componentes que vamos a usar, tmb los tipos de usuario y demas
 
 // todas estas constantes son las que vamos a usar para los comentarios y los posteos en general
-// los camptions son basicamente son lo que ponemos abajo de cada posteo, es como lo que "opinamos de la foto"
-// los usuarios son los nombres de usuario que van a aparecer en cada posteo, 
-//  los comentarios fijos son algunos comentarios que van a aparecer en cada posteo, para que no se vea tan vacio, y para que se vea mas realista, ya que si no tendriamos posteos sin comentarios y eso no es muy realista 
+// los captions son basicamente lo que ponemos abajo de cada posteo, es como lo que "opinamos de la foto"
+// los usuarios son los nombres de usuario que van a aparecer en cada posteo
+// los comentarios fijos son algunos comentarios que van a aparecer en cada posteo, para que no se vea tan vacio
+// IA: RELLENAR LOS CAMPOS.
 
-// IA: RELLENAR LOS CAMPOS. 
 const CAPTIONS = [
   'Cuando es lunes pero igual estás feliz 😸',
   'El sol me llama pero el sueño me retiene 😴',
@@ -48,26 +44,22 @@ const COMENTARIOS_FIJOS = [
   { id: 3, usuario: 'michi_watcher', texto: 'Definitivamente el mejor del día' },
 ]
 
-
-
 function App() {
 
-    const [posteos, setPosteos] = useState<posteo[]>([]) // Guarda los posteos del feed que traemos de la Api, arranca con un array vacio
-    // solo pueden formar partes los objetos con la forma de la interface posteo
+  // Guarda los posteos del feed que traemos de la API, arranca con un array vacio
+  // solo pueden formar parte los objetos con la forma de la interface posteo
+  const [posteos, setPosteos] = useState<posteo[]>([])
 
+  // IA: Controla que pantalla se esta viendo (arranca con feed por default)
+  const [vistaActual, setVistaActual] = useState<'feed' | 'perfil'>('feed')
 
-    // IA: Controla que pantalla se esta viendo (arranca con feed x default)
-      const [vistaActual, setVistaActual] = useState<'feed' | 'perfil'>('feed')
-
-
+  // Que posteo esta clickeado, empieza en null
+  // Aca se guarda el posteo entero (en formato de la interface), se cierra y vuelve a null
   const [postSeleccionado, setPostSeleccionado] = useState<posteo | null>(null)
-  // que posteo esta clickeado, empieza en null. ACa se guarda el posteo entero (en formato de la interface, se cierra y vuelve a null) 
-  
 
-// IA: tare los posteos de la api, la primera vez que abro todo
-   useEffect(() => {
+  // IA: trae los posteos de la api, la primera vez que abro todo
+  useEffect(() => {
 
-    //a
     const traerGatos = async () => {
       try {
         const response = await axios.get('https://api.thecatapi.com/v1/images/search', {
@@ -75,14 +67,13 @@ function App() {
             limit: 12,
             api_key: import.meta.env.VITE_CAT_API_KEY,
           }
-        }) 
+        })
 
-    
-
-// genera posteos en base a la respuesta de la API (Parte con IA aca tmb), pero la api solo me deuvelve ID y URL. 
-// el map es para tranformar cada imagen y id que me devuelve la api en un posteo con todos los campos
+        // genera posteos en base a la respuesta de la API (Parte con IA aca tmb), pero la api solo me devuelve ID y URL
+        // el map es para transformar cada imagen y id que me devuelve la api en un posteo con todos los campos
+        // index es el num de posteo (para el caption, usuario y demas)
         const posteoGenerados: posteo[] = response.data.map(
-          (imagen: { id: string; url: string }, index: number) => ({ // index  es el num de posteo (para el caption, usuario y demas)
+          (imagen: { id: string; url: string }, index: number) => ({
             id: index + 1,
             url: imagen.url,
             usuario: USUARIOS[index],
@@ -93,23 +84,24 @@ function App() {
             fecha: new Date(Date.now() - index * 3600000).toLocaleDateString('es-AR'),
           })
         )
+
+        // guarda el array de los posteos generados en el useState para poder mandarlos y usarlos
         setPosteos(posteoGenerados)
-        // guarda el array de los psoteos generados en el use state para poder mandarlos e usarlos
 
       } catch (error) {
         console.error('Error al traer los gatos:', error)
       }
     }
 
-    traerGatos() // llamo a la funcion para que se ejecute, si no no se ejecuta nunca, y no traigo los gatos
+    // llamo a la funcion para que se ejecute, si no no se ejecuta nunca y no traigo los gatos
+    traerGatos()
 
-  }, []) // esto hace que se ejecute solo la primera vez que se hacen los componentes y se corre el programa 
-
-
+  }, [])
+  // el [] hace que se ejecute solo la primera vez que se cargan los componentes
 
   // Recorre todos los posteos y solo modifica el que tiene el id que recibió
-  // IA: esta funcion es para cuando le das like a un posteo, cambia el estado de liked y actualiza el numero de likes, se llama desde el feed y desde el modal, por eso esta en el componente principal, para que lo puedan usar ambos componentes
-  
+  // IA: esta funcion es para cuando le das like a un posteo, cambia el estado de liked y actualiza el numero de likes
+  // se llama desde el feed y desde el modal, por eso esta en el componente principal, para que lo puedan usar ambos
   const toggleLike = (id: number) => {
     setPosteos(
       posteos.map((post) => {
@@ -123,50 +115,44 @@ function App() {
     )
   }
 
-
-// los class name me los armo la IA asi podria tener entructura para hacer el css
+  // los classNames me los armo la IA asi podia tener estructura para hacer el css
   return (
     <>
-       <div className="app-layout">
-      <Sidebar
+      <div className="app-layout">
+        <Sidebar
+          vistaActual={vistaActual}
+          onNavegar={setVistaActual}
+          fotoPerfil={usuarioLogueado.fotoPerfil}
+        />
 
-        vistaActual={vistaActual} // es para ver que se ve apretado, si perfil o feed
-        onNavegar={setVistaActual} // para cambiar la vista actual, se lo paso al sidebar para que pueda cambiarlo desde ahi (el use state)
-        fotoPerfil={usuarioLogueado.fotoPerfil}
-
-      />
-
-      <main className="app-main">
-
-        {vistaActual === 'feed' ? (
-          <>
-            <StoriesBar />
-            <Feed
+        <main className="app-main">
+          {vistaActual === 'feed' ? (
+            <>
+              <StoriesBar />
+              <Feed
+                posteos={posteos}
+                onClickPost={setPostSeleccionado}
+                onToggleLike={toggleLike}
+              />
+            </>
+          ) : (
+            <ProfilePage
+              usuario={usuarioLogueado}
               posteos={posteos}
               onClickPost={setPostSeleccionado}
-              onToggleLike={toggleLike}
             />
-          </>
-        ) : (
-          <ProfilePage
-            usuario={usuarioLogueado}
-            posteos={posteos}
-            onClickPost={setPostSeleccionado}
+          )}
+        </main>
+
+        {/* cuando hay un posteo seleccionado y no es null, muestra el modal */}
+        {postSeleccionado && (
+          <PostModal
+            post={postSeleccionado}
+            onCerrar={() => setPostSeleccionado(null)}
+            onToggleLike={toggleLike}
           />
         )}
-      </main>
-
-// esto es cuando hay un modal seleccionado y no es null 
-      {postSeleccionado && (
-        <PostModal
-          post={postSeleccionado} // el use state de post seleccionado guarda el posteo entero, asi que se lo paso entero al modal para que pueda mostrar toda la info
-          onCerrar={() => setPostSeleccionado(null)} // cuando se cierra el post vuelve a null 
-          onToggleLike={toggleLike}
-        />
-      )}
-    </div>
-
-
+      </div>
     </>
   )
 }

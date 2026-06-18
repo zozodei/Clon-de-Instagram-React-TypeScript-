@@ -5,14 +5,13 @@ import './ProfilePage.css'
 interface Props {
   usuario: UsuarioFijo
   posteos: posteo[]
-  onClickPost: (post: posteo) => void
+  onClickPost: (post: posteo) => void // el modal si esta apretado o no
 }
 
 const ProfilePage = ({ usuario, posteos, onClickPost }: Props) => {
   return (
     <div className="perfil">
 
-      {/* Cabecera del perfil */}
       <div className="perfil-header">
         <img src={usuario.fotoPerfil} alt={usuario.usuario} className="perfil-avatar" />
 
@@ -27,10 +26,14 @@ const ProfilePage = ({ usuario, posteos, onClickPost }: Props) => {
               <strong>{usuario.publicacionesNumero}</strong>
               <span>publicaciones</span>
             </div>
+
+            {/* usamos toLocaleString para que el numero de seguidores se muestre con puntos
+                como separadores de miles, ademas le puse el span para mostrar la palabra seguidores */}
             <div className="perfil-stat">
               <strong>{usuario.seguidores.toLocaleString('es-AR')}</strong>
               <span>seguidores</span>
             </div>
+
             <div className="perfil-stat">
               <strong>{usuario.seguidos}</strong>
               <span>seguidos</span>
@@ -41,14 +44,12 @@ const ProfilePage = ({ usuario, posteos, onClickPost }: Props) => {
         </div>
       </div>
 
-      {/* Tabs — solo visual */}
       <div className="perfil-tabs">
         <button className="perfil-tab activo">PUBLICACIONES</button>
         <button className="perfil-tab">GUARDADOS</button>
         <button className="perfil-tab">ETIQUETADOS</button>
       </div>
 
-      {/* Grilla de fotos */}
       <div className="perfil-grilla">
         {posteos.map((post) => (
           <div
@@ -58,7 +59,8 @@ const ProfilePage = ({ usuario, posteos, onClickPost }: Props) => {
           >
             <img src={post.url} alt={post.caption} />
 
-            {/* Overlay con likes y comentarios al hacer hover */}
+            {/* esto es para que quede mas realista, cuando pasas por arriba de una foto
+                te muestra los likes y comentarios */}
             <div className="perfil-grilla-overlay">
               <span>
                 <svg viewBox="0 0 24 24" fill="white" width="16" height="16">
